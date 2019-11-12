@@ -6,7 +6,7 @@ If you're here, you've seen a repository using `autobadger` and want to know wha
 
 Repository stability is how likely the repository/project is ready for use. There are three options here:
 
-- `unstable`: the project is not at all ready for use, and potentially has no work done on it.
+- `unusable`: the project is not at all ready for use, and potentially has no work done on it.
 - `prerelease`: the project has finished Minimum Viable Product (MVP) but is potentailly buggy and can change (including with breaking backwards-incompatible changes) at any time.
 - `stable`: the project has published its first stable, production-ready release and is now using [SemVer](https://semver.org/) completely.
 

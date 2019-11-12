@@ -3,6 +3,10 @@
 ![Autobadger Release Stability](https://img.shields.io/static/v1?label=stability&message=unusable&style=flat-square&color=red)
 ![Autobadger Latest Release](https://img.shields.io/static/v1?label=latest&message=0.0.0&style=flat-square&color=purple)
 
+[_What are these badges?_](https://github.com/teaminkling/tree/master/BADGES.md)
+
+## Introduction
+
 GitHub Action that automatically manages a few types of badges in a predetermined area in your README.md file:
 
 - Current version.

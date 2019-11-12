@@ -55,7 +55,7 @@ function determineStability(tag) {
         return ["prerelease", "yellow"];
     }
 
-    return ["unstable", "red"];
+    return ["unusable", "red"];
 }
 
 exec('git tag', (err, stdout, _) => {
@@ -83,7 +83,7 @@ exec('git tag', (err, stdout, _) => {
 
     let newContents = existingContents.replace(/!\[Autobadger Release Stability]\((.*)\)/,
         "![Autobadger Release Stability](" + stabilityUrl + ")");
-    newContents = existingContents.replace(/!\[Autobadger Latest Release]\((.*)\)/,
+    newContents = newContents.replace(/!\[Autobadger Latest Release]\((.*)\)/,
         "![Autobadger Latest Release](" + versionUrl + ")");
 
     fs.writeFileSync(absPath, newContents);
