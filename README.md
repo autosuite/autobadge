@@ -1,21 +1,29 @@
 # Autobadger
 
-![Autobadger Release Stability](https://img.shields.io/static/v1?label=stability&message=prerelease&style=flat-square&color=yellow)
-![Autobadger Latest Release](https://img.shields.io/static/v1?label=latest&message=0.1.0&style=flat-square&color=purple)
+| Summary           | Badge                                              |
+| ----------------- | -------------------------------------------------- |
+| Release Stability | ![Autobadger Release Stability][release-stability] |
+| Latest Release    | ![Autobadger Latest Release][latest-release]       |
+| Code Quality      | [![Maintainability][quality-image]][quality-link]  |
+| Code Coverage     | [![Test Coverage][coverage-image]][coverage-link]  |
 
-[_What are these badges?_](https://github.com/teaminkling/autobadger/tree/master/BADGES.md)
+[release-stability]: https://img.shields.io/static/v1?label=stability&message=unusable&color=red
+[latest-release]: https://img.shields.io/static/v1?label=latest&message=0.0.0&color=purple
+[quality-image]: https://api.codeclimate.com/v1/badges/2a5f19c4fac18d083aa6/maintainability
+[quality-link]: https://codeclimate.com/github/autosuite/autobadger/maintainability
+[coverage-image]: https://api.codeclimate.com/v1/badges/2a5f19c4fac18d083aa6/test_coverage
+[coverage-link]: https://codeclimate.com/github/autosuite/autobadger/test_coverage
 
 ## Introduction
 
-GitHub Action that automatically manages a few types of badges in a predetermined area in your README.md file:
+GitHub Action that automatically manages a few types of badges in a predetermined area in your README.md file. Currently, this is two badges:
 
 - Current version.
 - Stability (post-1.0.0 release, pre-1.0.0 release, pre-0.1.0 release).
-- A link to a Markdown file in this repository.
 
 ## Usage
 
-This is best added to a workflow on `push` to any branch. For now, since it only detects the `README.md` file, there is no need to provide any additional information. This may change in the future.
+This is best added to a workflow on `push` to any branch. Since it only detects the `README.md` file, there is no need to provide any additional information.
 
 Note that you will need to have an action that performs a pre-commit (stage, commit) and push:
 
@@ -29,17 +37,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - uses: teaminkling/skip-commit@master
+      - uses: autosuite/autosuite@master
         with:
           commit-filter: skip-log, skip-ci, automated
-      - uses: teaminkling/autobadger@master
-      - name: Pre-remote commit actions
-        run: |
-          git add README.md && \
-            git config --local user.email "action@github.com" && \
-            git config --local user.name "GitHub Action" && \
-            git commit -m "[skip-ci, auto] Make changes automatically to meta files." || \
-            echo "Nothing to commit."
+      - uses: autosuite/autobadger@master
+      - uses: autosuite/autoversion@master
+        with:
+          managers: npm
+      - uses: autosuite/autologger@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_repository: ${{ github.repository }}
+      - uses: autosuite/automilestone@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-repository: ${{ github.repository }}
+      - uses: autosuite/autocommit@master
       - uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -48,11 +61,24 @@ jobs:
 Next, add the following lines to anywhere in your `README.md` file:
 
 ```md
-![Autobadger Release Stability](#)
-![Autobadger Latest Release](#)
-
-[What is this?](https://github.com/teaminkling/autobadger/tree/master/BADGES.md)
+[release-stability]: foo
+[latest-release]: foo
 ```
+
+As well as these lines:
+
+```md
+| Summary           | Badge                                              |
+| ----------------- | -------------------------------------------------- |
+| Release Stability | ![Autobadger Release Stability][release-stability] |
+| Latest Release    | ![Autobadger Latest Release][latest-release]       |
+```
+
+## Configuration
+
+> You can see all configuration in the [action.yml](action.yml) file.
+
+There is no special configuration for this Action. This may be subject to change as the need arises.
 
 ## Documentation
 

@@ -7,6 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+      - uses: teaminkling/skip-commit@master
+        with:
+          commit-filter: skip-ci, skip-log, automated
       - uses: teaminkling/autobadger@master
       - name: Pre-remote commit actions
         run: |

@@ -11,3 +11,9 @@ Repository stability is how likely the repository/project is ready for use. Ther
 - `stable`: the project has published its first stable, production-ready release and is now using [SemVer](https://semver.org/) completely.
 
 Note that repository stability does not mean every artifact produced by this repository is stable. Changes are introduced all of the time. It just sets the expectations of stability for the officially released versions that come from the tags on the `master` branch.
+
+## Other Badges
+
+These repositories probably have other badges that aren't present on this list. In those cases, you might be able to click on them to find out their meaning.
+
+Common ones are code coverage and code quality grades.

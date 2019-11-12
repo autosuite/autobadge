@@ -1,6 +1,14 @@
-const { exec } = require('child_process');
+const exec = require('@actions/exec');
+const core = require('@actions/core');
+
 const fs = require('fs');
 const path = process.cwd();
+
+// TODO: Rewrite entire module in Typescript for the next major release.
+// TODO: Write acceptance tests using an appropriate framework.
+// TODO: Adopt more of the Autosuite.
+// TODO: Use more of the official modules provided by GitHub.
+// TODO: Allow controlling badged file.
 
 /**
  * API endpoint Shields URL base to add our GET queries to.
@@ -8,14 +16,16 @@ const path = process.cwd();
 const BASE_BADGE_URL = "https://img.shields.io/static/v1";
 
 /**
- * Given an array of tags, find the latest SemVer tag and return it.
+ * Comparator: given an array of tags, find the latest SemVer tag and return it.
  *
  * @param array tags the tags to find the latest SemVer version from
  */
-function determineLatestVersion(tags) {
+async function determineLatestVersion(tags) {
     /* We need to iterate all anyway to ignore all the useless values, so let's not define a comparator. */
 
     let largestSeen = [0, 0, 0];
+
+    core.info("Tags found: " + tags);
 
     tags.split("\n").forEach(tag => {
         /* If it's not SemVer (or doesn't contain SemVer), continue. */
@@ -39,7 +49,7 @@ function determineLatestVersion(tags) {
         }
     });
 
-    console.log("Largest seen tag was: " + largestSeen.toString());
+    core.info("Largest seen tag was: " + largestSeen.toString().replace(",", "."));
 
     return largestSeen;
 }
@@ -50,7 +60,7 @@ function determineLatestVersion(tags) {
  *
  * @param array tag 3-ary array of ints, SemVer representation as [MAJOR, MINOR, PATCH]
  */
-function determineStability(tag) {
+async function determineStability(tag) {
     if (tag[0] > 0) {
         return ["stable", "green"];
     } else if (tag[1] > 0) {
@@ -60,13 +70,10 @@ function determineStability(tag) {
     return ["unusable", "red"];
 }
 
-exec('git fetch', (_err, _stdout, _stderr) => {
-    exec('git tag', (_err, stdout, _stderr) => {
-        let tags = stdout;
-
-        const versionArray = determineLatestVersion(tags);
-        const versionString = versionArray.join('.');
-
+exec.exec('git fetch');
+exec.exec('git tag', [], {
+    stdout: (data) => {
+        const versionArray = determineLatestVersion(data.toString());
         const stabilityArray = determineStability(versionArray);
         const stabilityString = stabilityArray[0];
         const stabilityColour = stabilityArray[1];
@@ -74,9 +81,9 @@ exec('git fetch', (_err, _stdout, _stderr) => {
         /* Build the URLs. */
 
         const stabilityUrl = BASE_BADGE_URL + "?label=stability&message=" + stabilityString +
-            "&style=flat-square&color=" + stabilityColour;
-        const versionUrl = BASE_BADGE_URL + "?label=latest&message=" + versionString +
-            "&style=flat-square&color=purple";
+            "&color=" + stabilityColour;
+        const versionUrl = BASE_BADGE_URL + "?label=latest&message=" + versionArray.join('.') +
+            "&color=purple";
 
         /* Place them in the README.md file using sed. */
 
@@ -84,13 +91,19 @@ exec('git fetch', (_err, _stdout, _stderr) => {
         const existingContents = fs.existsSync(absPath) ?
             fs.readFileSync(absPath).toString() : "";
 
-        let newContents = existingContents.replace(/!\[Autobadger Release Stability]\((.*)\)/,
-            "![Autobadger Release Stability](" + stabilityUrl + ")");
-        newContents = newContents.replace(/!\[Autobadger Latest Release]\((.*)\)/,
-            "![Autobadger Latest Release](" + versionUrl + ")");
+        newContents = existingContents.replace(
+            /\[release-stability]: (.*)/,
+            "[release-stability]: " + stabilityUrl
+        ).replace(
+            /\[latest-release]: (.*)/,
+            "[latest-release]: " + versionUrl
+        );
 
-        console.log("Writing changes, if there are any.");
+        core.info("Writing changes, if there are any.");
 
         fs.writeFileSync(absPath, newContents);
-    });
+    },
+    stderr: (data) => {
+        core.error(data.toString());
+    },
 });
