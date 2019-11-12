@@ -1,6 +1,7 @@
 # Autobadger
 
-![Release Usability](https://img.shields.io/static/v1?label=stability&message=unusable&style=flat-square&color=red)
+![Autobadger Release Stability](https://img.shields.io/static/v1?label=stability&message=unusable&style=flat-square&color=red)
+![Autobadger Latest Release](https://img.shields.io/static/v1?label=latest&message=0.0.0&style=flat-square&color=purple)
 
 GitHub Action that automatically manages a few types of badges in a predetermined area in your README.md file:
 
@@ -10,9 +11,7 @@ GitHub Action that automatically manages a few types of badges in a predetermine
 
 ## Usage
 
-This is best added to a workflow on `push` to any branch. For now, since it only detects the `README.md` file, there is no need to provide any additional information.
-
-This may change in the future.
+This is best added to a workflow on `push` to any branch. For now, since it only detects the `README.md` file, there is no need to provide any additional information. This may change in the future.
 
 Note that you will need to have an action that performs a pre-commit (stage, commit) and push:
 
@@ -37,6 +36,15 @@ jobs:
       - uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+Next, add the following lines to anywhere in your `README.md` file:
+
+```md
+![Autobadger Release Stability](#)
+![Autobadger Latest Release](#)
+
+[What is this?](https://github.com/teaminkling/tree/master/BADGES.md)
 ```
 
 ## Documentation

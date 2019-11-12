@@ -1,0 +1,9 @@
+name: autobadger
+description: Automation of some badges in README.md.
+author: Inkling Interactive
+branding:
+  icon: book-open
+  color: purple
+runs:
+  using: node12
+  main: index.js

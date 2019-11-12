@@ -1,0 +1,24 @@
+{
+  "name": "autobadger",
+  "version": "0.1.0",
+  "description": "GitHub Action that automatically manages a few types of badges in a predetermined area in your README.md file.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/teaminkling/autobadger.git"
+  },
+  "keywords": [
+    "github",
+    "action"
+  ],
+  "author": "Inkling Interactive",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/teaminkling/autobadger/issues"
+  },
+  "homepage": "https://github.com/teaminkling/autobadger#readme",
+  "dependencies": {}
+}
