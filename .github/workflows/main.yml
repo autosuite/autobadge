@@ -10,7 +10,7 @@ jobs:
       - uses: teaminkling/autobadger@master
       - name: Pre-remote commit actions
         run: |
-          git add CHANGELOG.md && \
+          git add README.md && \
             git config --local user.email "action@github.com" && \
             git config --local user.name "GitHub Action" && \
             git commit -m "[skip-ci, auto] Make changes automatically to meta files." || \
