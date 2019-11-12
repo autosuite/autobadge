@@ -1,24 +1,43 @@
-# template
+# Autobadger
 
 ![Release Usability](https://img.shields.io/static/v1?label=stability&message=unusable&style=flat-square&color=red)
-![Latest Release](https://img.shields.io/github/v/release/GH_USER/GH_REPO?sort=semver&style=flat-square)
-![GitHub issues](https://img.shields.io/github/issues-raw/GH_USER/GH_REPO?style=flat-square)
 
-Base template for all repositories without a better template.
+GitHub Action that automatically manages a few types of badges in a predetermined area in your README.md file:
 
-## Rationale
+- Current version.
+- Stability (post-1.0.0 release, pre-1.0.0 release, pre-0.1.0 release).
+- A link to a Markdown file in this repository.
 
-> See the [features document](FEATURES.md) for more specific information about the purpose of this software.
+## Usage
 
-Describe the "why" of your GitHub project here.
+This is best added to a workflow on `push` to any branch. For now, since it only detects the `README.md` file, there is no need to provide any additional information.
 
-## Build Instructions
+This may change in the future.
 
-Describe exactly how to build this project from scratch. Keep in mind platform-specific instructions.
+Note that you will need to have an action that performs a pre-commit (stage, commit) and push:
 
-## Deploy
+```yaml
+name: my-workflow
 
-Describe at least how _you_ are deploying this project so you can do it again.
+on: [push]
+
+jobs:
+  autocommit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: teaminkling/autobadger@master
+      - name: Pre-remote commit actions
+        run: |
+          git add CHANGELOG.md && \
+            git config --local user.email "action@github.com" && \
+            git config --local user.name "GitHub Action" && \
+            git commit -m "[skip-ci, auto] Make changes automatically to meta files." || \
+            echo "Nothing to commit."
+      - uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+```
 
 ## Documentation
 
@@ -27,10 +46,3 @@ If you would like to contribute to this project, please read our [contributors d
 The license we use for this project is defined in [the license file](LICENSE).
 
 Thanks!
-
-## To-Do
-
-- [ ] **Check the license!**
-- [ ] Finish/edit this README file.
-- [ ] Add/edit any and all badges associated with this project.
-- [ ] Ensure your repository/account/organisation is connected to [Sheilds.io](https://shields.io/).
