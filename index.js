@@ -39,6 +39,8 @@ function determineLatestVersion(tags) {
         }
     });
 
+    console.log("Largest seen tag was: " + largestSeen.toString());
+
     return largestSeen;
 }
 
@@ -58,7 +60,7 @@ function determineStability(tag) {
     return ["unusable", "red"];
 }
 
-exec('git tag', (err, stdout, _) => {
+exec('git tag', (_, stdout, _) => {
     let tags = stdout;
 
     const versionArray = determineLatestVersion(tags);
@@ -85,6 +87,8 @@ exec('git tag', (err, stdout, _) => {
         "![Autobadger Release Stability](" + stabilityUrl + ")");
     newContents = newContents.replace(/!\[Autobadger Latest Release]\((.*)\)/,
         "![Autobadger Latest Release](" + versionUrl + ")");
+
+    console.log("Writing changes, if there are any.");
 
     fs.writeFileSync(absPath, newContents);
 });
