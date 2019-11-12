@@ -60,35 +60,37 @@ function determineStability(tag) {
     return ["unusable", "red"];
 }
 
-exec('git tag', (_, stdout, _) => {
-    let tags = stdout;
+exec('git fetch', (_err, _stdout, _stderr) => {
+    exec('git tag', (_err, stdout, _stderr) => {
+        let tags = stdout;
 
-    const versionArray = determineLatestVersion(tags);
-    const versionString = versionArray.join('.');
+        const versionArray = determineLatestVersion(tags);
+        const versionString = versionArray.join('.');
 
-    const stabilityArray = determineStability(versionArray);
-    const stabilityString = stabilityArray[0];
-    const stabilityColour = stabilityArray[1];
+        const stabilityArray = determineStability(versionArray);
+        const stabilityString = stabilityArray[0];
+        const stabilityColour = stabilityArray[1];
 
-    /* Build the URLs. */
+        /* Build the URLs. */
 
-    const stabilityUrl = BASE_BADGE_URL + "?label=stability&message=" + stabilityString +
-        "&style=flat-square&color=" + stabilityColour;
-    const versionUrl = BASE_BADGE_URL + "?label=latest&message=" + versionString +
-        "&style=flat-square&color=purple";
+        const stabilityUrl = BASE_BADGE_URL + "?label=stability&message=" + stabilityString +
+            "&style=flat-square&color=" + stabilityColour;
+        const versionUrl = BASE_BADGE_URL + "?label=latest&message=" + versionString +
+            "&style=flat-square&color=purple";
 
-    /* Place them in the README.md file using sed. */
+        /* Place them in the README.md file using sed. */
 
-    const absPath = path + "/README.md";
-    const existingContents = fs.existsSync(absPath) ?
-        fs.readFileSync(absPath).toString() : "";
+        const absPath = path + "/README.md";
+        const existingContents = fs.existsSync(absPath) ?
+            fs.readFileSync(absPath).toString() : "";
 
-    let newContents = existingContents.replace(/!\[Autobadger Release Stability]\((.*)\)/,
-        "![Autobadger Release Stability](" + stabilityUrl + ")");
-    newContents = newContents.replace(/!\[Autobadger Latest Release]\((.*)\)/,
-        "![Autobadger Latest Release](" + versionUrl + ")");
+        let newContents = existingContents.replace(/!\[Autobadger Release Stability]\((.*)\)/,
+            "![Autobadger Release Stability](" + stabilityUrl + ")");
+        newContents = newContents.replace(/!\[Autobadger Latest Release]\((.*)\)/,
+            "![Autobadger Latest Release](" + versionUrl + ")");
 
-    console.log("Writing changes, if there are any.");
+        console.log("Writing changes, if there are any.");
 
-    fs.writeFileSync(absPath, newContents);
+        fs.writeFileSync(absPath, newContents);
+    });
 });
