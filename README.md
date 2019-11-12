@@ -3,7 +3,7 @@
 ![Autobadger Release Stability](https://img.shields.io/static/v1?label=stability&message=unusable&style=flat-square&color=red)
 ![Autobadger Latest Release](https://img.shields.io/static/v1?label=latest&message=0.0.0&style=flat-square&color=purple)
 
-[_What are these badges?_](https://github.com/teaminkling/tree/master/BADGES.md)
+[_What are these badges?_](https://github.com/teaminkling/autobadger/tree/master/BADGES.md)
 
 ## Introduction
 
@@ -29,10 +29,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+      - uses: teaminkling/skip-commit@master
+        with:
+          commit-filter: skip-log, skip-ci, automated
       - uses: teaminkling/autobadger@master
       - name: Pre-remote commit actions
         run: |
-          git add CHANGELOG.md && \
+          git add README.md && \
             git config --local user.email "action@github.com" && \
             git config --local user.name "GitHub Action" && \
             git commit -m "[skip-ci, auto] Make changes automatically to meta files." || \
@@ -48,7 +51,7 @@ Next, add the following lines to anywhere in your `README.md` file:
 ![Autobadger Release Stability](#)
 ![Autobadger Latest Release](#)
 
-[What is this?](https://github.com/teaminkling/tree/master/BADGES.md)
+[What is this?](https://github.com/teaminkling/autobadger/tree/master/BADGES.md)
 ```
 
 ## Documentation
