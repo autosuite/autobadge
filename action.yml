@@ -1,4 +1,4 @@
-name: autobadger
+name: autobadge
 description: Automation of some badges in README.md.
 author: Inkling Interactive
 branding:
@@ -6,4 +6,4 @@ branding:
   color: purple
 runs:
   using: node12
-  main: index.js
+  main: main.js

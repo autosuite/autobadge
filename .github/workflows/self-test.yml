@@ -1,0 +1,27 @@
+name: Self-Test
+
+on: [push]
+
+jobs:
+  autocommit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: autosuite/skip-commit@master
+        with:
+          commit-filter: skip-ci, skip-log, automated
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Compile TypeScript
+        run: |
+          npm ci
+          npx tsc
+        env:
+          CI: true
+      - name: Self-Test
+        uses: ./
+      - uses: autosuite/autocommit@master
+      - uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}

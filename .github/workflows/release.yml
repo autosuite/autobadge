@@ -1,0 +1,49 @@
+name: Release Typescript Action
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: olegtarasov/get-tag@v1
+      id: tag
+    - name: Checkout Release Branch
+      run: |
+        git fetch --tags
+        git checkout release/${{ steps.tag.outputs.tag }} | git checkout -b release/${{ steps.tag.outputs.tag }}
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - name: Compile TypeScript
+      run: |
+        npm ci
+        npx tsc
+      env:
+        CI: true
+    - name: Delete .gitignore
+      run: |
+        rm -f .gitignore
+    - uses: autosuite/autocommit@master
+      with:
+        commit-message: "[skip-ci, automated] Automated release of version ${{ steps.tag.outputs.tag }}"
+    - name: Move Tag to Release
+      run: |
+        git tag --force ${{ steps.tag.outputs.tag }}
+    - name: Force Push Branch
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: release/${{ steps.tag.outputs.tag }}
+        force: true
+    - name: Force Push Tag
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: release/${{ steps.tag.outputs.tag }}
+        tags: true
+        force: true
