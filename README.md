@@ -1,18 +1,18 @@
-# Autobadger
+# Autobadge
 
 | Summary           | Badge                                              |
 | ----------------- | -------------------------------------------------- |
-| Release Stability | ![Autobadger Release Stability][release-stability] |
-| Latest Release    | ![Autobadger Latest Release][latest-release]       |
+| Release Stability | ![Autobadge Release Stability][release-stability] |
+| Latest Release    | ![Autobadge Latest Release][latest-release]       |
 | Code Quality      | [![Maintainability][quality-image]][quality-link]  |
 | Code Coverage     | [![Test Coverage][coverage-image]][coverage-link]  |
 
-[release-stability]: https://img.shields.io/static/v1?label=latest&message=2.0.2&color=purple
-[latest-release]: https://img.shields.io/static/v1?label=stability&message=stable&color=green
+[release-stability]: https://img.shields.io/static/v1?label=latest&message=0.1.0&color=purple
+[latest-release]: https://img.shields.io/static/v1?label=stability&message=prerelease&color=yellow
 [quality-image]: https://api.codeclimate.com/v1/badges/2a5f19c4fac18d083aa6/maintainability
-[quality-link]: https://codeclimate.com/github/autosuite/autobadger/maintainability
+[quality-link]: https://codeclimate.com/github/autosuite/autobadge/maintainability
 [coverage-image]: https://api.codeclimate.com/v1/badges/2a5f19c4fac18d083aa6/test_coverage
-[coverage-link]: https://codeclimate.com/github/autosuite/autobadger/test_coverage
+[coverage-link]: https://codeclimate.com/github/autosuite/autobadge/test_coverage
 
 ## Introduction
 
@@ -40,7 +40,7 @@ jobs:
       - uses: autosuite/autocommit@master
         with:
           commit-filter: skip-log, skip-ci, automated
-      - uses: autosuite/autobadger@master
+      - uses: autosuite/autobadge@master
       - uses: autosuite/autocommit@master
       - uses: ad-m/github-push-action@master
         with:

@@ -1,6 +1,6 @@
 # Badge Meaning
 
-If you're here, you've seen a repository using `autobadger` and want to know what some of these badges mean. Well, non-exhaustively, here's just that:
+If you're here, you've seen a repository using `autobadge` and want to know what some of these badges mean. Well, non-exhaustively, here's just that:
 
 ## Stability
 
