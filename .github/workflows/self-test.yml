@@ -7,9 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - uses: autosuite/skip-commit@master
+      - uses: autosuite/autoskip@master
         with:
           commit-filter: skip-ci, skip-log, automated
+      - uses: autosuite/autoversion@master
+        with:
+          managers: npm
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
@@ -21,6 +24,15 @@ jobs:
           CI: true
       - name: Self-Test
         uses: ./
+      - uses: autosuite/autolog@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-repository: ${{ github.repository }}
+      - uses: autosuite/automilestone@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-repository: ${{ github.repository }}
+          prefix: pre-
       - uses: autosuite/autocommit@master
       - uses: ad-m/github-push-action@master
         with:

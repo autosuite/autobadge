@@ -1,6 +1,6 @@
 {
   "name": "autobadge",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "GitHub Action that automatically manages a few types of badges in a predetermined area in your README.md file.",
   "main": "main.js",
   "scripts": {

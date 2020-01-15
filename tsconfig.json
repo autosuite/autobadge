@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     /* Basic Options */
-
     "target": "es5",
     "module": "commonjs",
     "strict": true,
@@ -12,21 +11,17 @@
     "strictPropertyInitialization": true,
     "noImplicitThis": true,
     "alwaysStrict": true,
-
     /* Additional Checks */
-
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-
     /* Module Resolution Options */
-
     "moduleResolution": "node",
     "esModuleInterop": true,
-
     /* Advanced Options */
-
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "rootDir": "src",
+    "outDir": "dist"
   }
 }
