@@ -6,4 +6,4 @@ branding:
   color: purple
 runs:
   using: node12
-  main: main.js
+  main: dist/main.js
