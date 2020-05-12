@@ -1,14 +1,12 @@
 # Autobadge
 
-| Summary           | Badge                                              |
-| ----------------- | -------------------------------------------------- |
-| Release Stability | ![Autobadge Release Stability][release-stability]  |
-| Latest Release    | ![Autobadge Latest Release][latest-release]        |
-| Code Quality      | [![Maintainability][quality-image]][quality-link]  |
-| Code Coverage     | [![Test Coverage][coverage-image]][coverage-link]  |
+![Autobadge Stable Release][stable-release]
+![Autobadge Development Release][development-release]
+[![Maintainability][quality-image]][quality-link]
+[![Test Coverage][coverage-image]][coverage-link]
 
-[release-stability]: https://img.shields.io/static/v1?label=latest&message=0.1.0&color=purple
-[latest-release]: https://img.shields.io/static/v1?label=stability&message=prerelease&color=yellow
+[stable-release]: https://img.shields.io/static/v1?label=stable&message=v0.1.0&color=blue
+[development-release]: https://img.shields.io/static/v1?label=in-dev&message=v0.2.0-rc2&color=red
 [quality-image]: https://api.codeclimate.com/v1/badges/74ffb9e627a105dd7a43/maintainability
 [quality-link]: https://codeclimate.com/github/autosuite/autobadge/maintainability
 [coverage-image]: https://api.codeclimate.com/v1/badges/74ffb9e627a105dd7a43/test_coverage
@@ -16,13 +14,22 @@
 
 ## Introduction
 
-This is a GitHub Action that automatically manages a few types of badges in a predetermined area in your `README.md`
-file. Currently, this consists of two badges:
+This is a GitHub Action that automatically manages two version badges in your `README.md`:
 
-- Current version.
-- Stability.
+- Current stable version.
+- Current development version.
+
+Here's an example of the badges in action:
+
+![Autobadge Stable Release][example-stable-release]
+![Autobadge Development Release][example-development-release]
+
+[example-stable-release]: https://img.shields.io/static/v1?label=stable&message=v0.1.0&color=purple
+[example-development-release]: https://img.shields.io/static/v1?label=develop&message=v0.2.0-rc2&color=purple
 
 ## Usage
+
+> Though the example below uses `master`, you should use the explicit version suitable for your project.
 
 Note that you will need to have an Action that performs a pre-commit (stage, commit) and push, as seen below:
 
@@ -38,7 +45,6 @@ jobs:
       - uses: actions/checkout@master
       - uses: autosuite/autobadge@master
       - uses: autosuite/autocommit@master
-      - uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -46,17 +52,15 @@ jobs:
 Next, add the following lines to anywhere in your `README.md` file (see the source of this file as an example):
 
 ```md
-[release-stability]: foo
-[latest-release]: foo
+[stable-release]: ...
+[development-release]: ...
 ```
 
-As well as these lines:
+As well as these lines underneath the first header of the file:
 
 ```md
-| Summary           | Badge                                              |
-| ----------------- | -------------------------------------------------- |
-| Release Stability | ![Autobadger Release Stability][release-stability] |
-| Latest Release    | ![Autobadger Latest Release][latest-release]       |
+![Autobadge Stable Release][stable-release]
+![Autobadge Development Release][development-release]
 ```
 
 ## Configuration
