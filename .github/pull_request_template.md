@@ -1,8 +1,6 @@
-Closes #<issue-number-here>.
-
 ## Checklist
 
-- [ ] Ensure all changes are locally tested.
+- [ ] Ensure you have locally tested all changes.
 - [ ] Either have this PR reference an issue or explain why it exists.
 - [ ] Ensure changes are not too stale (>30 days old).
 - [ ] Complete code review by at least one other person, if applicable.

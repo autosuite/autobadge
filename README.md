@@ -2,8 +2,8 @@
 
 | Summary           | Badge                                              |
 | ----------------- | -------------------------------------------------- |
-| Release Stability | ![Autobadge Release Stability][release-stability] |
-| Latest Release    | ![Autobadge Latest Release][latest-release]       |
+| Release Stability | ![Autobadge Release Stability][release-stability]  |
+| Latest Release    | ![Autobadge Latest Release][latest-release]        |
 | Code Quality      | [![Maintainability][quality-image]][quality-link]  |
 | Code Coverage     | [![Test Coverage][coverage-image]][coverage-link]  |
 
@@ -16,16 +16,15 @@
 
 ## Introduction
 
-GitHub Action that automatically manages a few types of badges in a predetermined area in your `README.md` file. Currently, this is two badges:
+This is a GitHub Action that automatically manages a few types of badges in a predetermined area in your `README.md`
+file. Currently, this consists of two badges:
 
 - Current version.
-- Stability (post-`1.0.0` release, pre-`1.0.0` release, pre-`0.1.0` release).
+- Stability.
 
 ## Usage
 
-This is best added to a workflow on `push` to any branch. Since it only detects the `README.md` file, there is no need to provide any additional information.
-
-Note that you will need to have an action that performs a pre-commit (stage, commit) and push:
+Note that you will need to have an Action that performs a pre-commit (stage, commit) and push, as seen below:
 
 ```yaml
 name: my-workflow
@@ -68,4 +67,6 @@ There is no special configuration for this Action. This may be subject to change
 
 ## Documentation
 
-If you would like to contribute to this project, please read our [contributors documentation](CONTRIBUTING.md) and our [code of conduct](CODE_OF_CONDUCT.md). The license we use for this project is defined in [the license file](LICENSE).
+If you would like to contribute to this project, please read our [contributors documentation](CONTRIBUTING.md) and
+our [code of conduct](CODE_OF_CONDUCT.md). The license we use for this project is defined in
+[the license file](LICENSE).
