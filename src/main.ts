@@ -1,7 +1,7 @@
-import * as fs from 'fs';
-
 import * as core from '@actions/core';
 import * as exec from '@actions/exec';
+
+import * as autolib from 'autolib';
 
 /**
  * API endpoint Shields URL base to add our GET queries to.
@@ -13,82 +13,34 @@ const BASE_BADGE_URL: string = "https://img.shields.io/static/v1";
  */
 const TARGET_FILE: string = "README.md";
 
+/**
+ * The key to find in the stable release regular expression.
+ */
+const STABLE_RELEASE_KEY: string = "stable-release";
 
 /**
- * Given a SemVer representation determine the stability string to place in the repository stability badge's contents
- * and a colour.
- *
- * @param tag the SemVer representation as [MAJOR, MINOR, PATCH, INFO]
- * @returns a 2-ary [[Tuple]] of [STABILITY, COLOUR]
+ * The key to find in the development release regular expression.
  */
-function determineStability(tag: [Number, Number, Number, string | null]): [string, string] {
-    if (tag[0] > 0) {
-        return ["stable", "green"];
-    } else if (tag[1] > 0) {
-        return ["prerelease", "yellow"];
-    }
+const DEVELOPMENT_RELEASE_KEY: string = "development-release";
 
-    return ["unusable", "red"];
-}
+/**
+ * The stable release regular expression.
+ */
+const STABLE_RELEASE_REGEXP: RegExp = /\[stable-release]: (.*)/;
+
+/**
+ * The development release regular expression.
+ */
+const DEVELOPMENT_RELEASE_REGEXP: RegExp = /\[development-release]: (.*)/;
 
 /**
  * Form a version URL from the SemVer representation.
  *
  * @param versionTuple the SemVer representation as [MAJOR, MINOR, PATCH, INFO]
+ * @param color the colour of the badge
  */
-function formVersionUrl(versionTuple: [Number, Number, Number, string | null]): string {
-    return `${BASE_BADGE_URL}?label=latest&message=${versionTuple.join('.')}&color=purple`;
-}
-
-/**
- * Form a stability URL from the SemVer representation.
- *
- * @param versionTuple the SemVer representation as [MAJOR, MINOR, PATCH, INFO]
- */
-function formStabilityUrl(versionTuple: [Number, Number, Number, string | null]): string {
-    const stabilityTuple = determineStability(versionTuple);
-    const stabilityString = stabilityTuple[0];
-    const stabilityColour = stabilityTuple[1];
-
-    return `${BASE_BADGE_URL}?label=stability&message=${stabilityString}&color=${stabilityColour}`;
-}
-
-/**
- * Read the target file, read it, and return a [[string]] representation of the file.
- *
- * @returns the file's contents
- */
-function readFileContents(): string {
-    let fileContents: string = fs.existsSync(TARGET_FILE) ? fs.readFileSync(TARGET_FILE).toString() : "";
-
-    if (fileContents == "") {
-        core.warning(`${TARGET_FILE} is empty!`);
-    }
-
-    return fileContents;
-}
-
-/**
- * Perform the substituation and writing of the target file.
- *
- * @param fileContents the existing contents of the file
- * @param versionTuple the SemVer representation as [MAJOR, MINOR, PATCH, INFO]
- */
-function replaceAndWrite(fileContents: string, versionTuple: [Number, Number, Number, string | null]) {
-    /* Perform the replacement and write the file. */
-
-    const replacements: Array<[RegExp, string]> = [
-        [/\[release-stability]: (.*)/, `[release-stability]: ${formVersionUrl(versionTuple)}`],
-        [/\[latest-release]: (.*)/, `[latest-release]: ${formStabilityUrl(versionTuple)}`],
-    ];
-
-    for (const replacementTuple of replacements) {
-        fileContents = fileContents.replace(replacementTuple[0], replacementTuple[1]);
-    }
-
-    fs.writeFile(TARGET_FILE, fileContents, () => {
-        core.info("File successfully saved!");
-    });
+async function formVersionUrl(versionTuple: autolib.SemVer, color: string): Promise<string> {
+    return `${BASE_BADGE_URL}?label=latest&message=${versionTuple.toString()}&color=${color}`;
 }
 
 /**
@@ -98,12 +50,27 @@ async function run() {
     await exec.exec('git fetch --tags');
     await exec.exec('git tag', [], {
         listeners: {
-            stdout: (data: Buffer) => {
-                const versionTuple: [Number, Number, Number, string | null] = determineLatestVersion(data.toString());
+            stdout: async (data: Buffer) => {
+                const latestStableVersion: autolib.SemVer = await autolib.findLatestSemVerUsingString(
+                    data.toString(), true
+                );
 
-                core.info(`Largest seen tag was: ${versionTuple.toString().replace(",", ".")}`);
+                const latestDevelopmentVersion: autolib.SemVer = await autolib.findLatestSemVerUsingString(
+                    data.toString(), false
+                );
 
-                replaceAndWrite(readFileContents(), versionTuple);
+                const replacements: Array<autolib.ReplacementMap> = [
+                    new autolib.ReplacementMap(
+                        STABLE_RELEASE_REGEXP,
+                        `[${STABLE_RELEASE_KEY}]: ${formVersionUrl(latestStableVersion, "green")}`
+                    ),
+                    new autolib.ReplacementMap(
+                        DEVELOPMENT_RELEASE_REGEXP,
+                        `[${DEVELOPMENT_RELEASE_KEY}]: ${formVersionUrl(latestDevelopmentVersion, "purple")}`
+                    ),
+                ];
+
+                autolib.rewriteFileContentsWithReplacements(TARGET_FILE, replacements);
             },
             stderr: (data: Buffer) => {
                 core.error(data.toString());
@@ -112,4 +79,4 @@ async function run() {
     });
 };
 
-run();
+run().then(() => {});
