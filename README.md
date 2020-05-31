@@ -63,6 +63,9 @@ As well as these lines underneath the first header of the file:
 ![Autobadge Development Release][development-release]
 ```
 
+Obviously, you should make sure that your version tags exist and follow either `0.1.12` format or `v0.1.12` format.
+Pre-release versioning is supported as well as well as build information, e.g.: `v0.1.12-rc3+commit-58`.
+
 ## Configuration
 
 > You can see all configuration in the [action.yml](action.yml) file.
