@@ -75,5 +75,6 @@ There is no special configuration for this Action. This may be subject to change
 ## Documentation
 
 If you would like to contribute to this project, please read our [contributors documentation](CONTRIBUTING.md) and
-our [code of conduct](CODE_OF_CONDUCT.md). The license we use for this project is defined in
-[the license file](LICENSE).
+our [code of conduct](CODE_OF_CONDUCT.md).
+
+The license we use for this project is defined in [the license file](LICENSE).
