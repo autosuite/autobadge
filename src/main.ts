@@ -1,6 +1,3 @@
-import * as core from '@actions/core';
-import * as exec from '@actions/exec';
-
 import * as autolib from 'autolib';
 
 /**
@@ -47,36 +44,21 @@ async function formVersionUrl(versionTuple: autolib.SemVer, color: string): Prom
  * Run the Action.
  */
 async function run() {
-    await exec.exec('git fetch --tags');
-    await exec.exec('git tag', [], {
-        listeners: {
-            stdout: async (data: Buffer) => {
-                const latestStableVersion: autolib.SemVer = await autolib.findLatestSemVerUsingString(
-                    data.toString(), true
-                );
+    const latestStableVersion: autolib.SemVer = await autolib.findLatestVersionFromGitTags(true);
+    const latestDevelopmentVersion: autolib.SemVer = await autolib.findLatestSemVerUsingString(false);
 
-                const latestDevelopmentVersion: autolib.SemVer = await autolib.findLatestSemVerUsingString(
-                    data.toString(), false
-                );
+    const replacements: Array<autolib.ReplacementMap> = [
+        new autolib.ReplacementMap(
+            STABLE_RELEASE_REGEXP,
+            `[${STABLE_RELEASE_KEY}]: ${formVersionUrl(latestStableVersion, "green")}`
+        ),
+        new autolib.ReplacementMap(
+            DEVELOPMENT_RELEASE_REGEXP,
+            `[${DEVELOPMENT_RELEASE_KEY}]: ${formVersionUrl(latestDevelopmentVersion, "purple")}`
+        ),
+    ];
 
-                const replacements: Array<autolib.ReplacementMap> = [
-                    new autolib.ReplacementMap(
-                        STABLE_RELEASE_REGEXP,
-                        `[${STABLE_RELEASE_KEY}]: ${formVersionUrl(latestStableVersion, "green")}`
-                    ),
-                    new autolib.ReplacementMap(
-                        DEVELOPMENT_RELEASE_REGEXP,
-                        `[${DEVELOPMENT_RELEASE_KEY}]: ${formVersionUrl(latestDevelopmentVersion, "purple")}`
-                    ),
-                ];
-
-                autolib.rewriteFileContentsWithReplacements(TARGET_FILE, replacements);
-            },
-            stderr: (data: Buffer) => {
-                core.error(data.toString());
-            },
-        }
-    });
+    autolib.rewriteFileContentsWithReplacements(TARGET_FILE, replacements);
 };
 
-run().then(() => {});
+run();
