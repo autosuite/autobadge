@@ -3,9 +3,7 @@
   "version": "0.1.0",
   "description": "GitHub Action that automatically manages a few types of badges in a predetermined area in your README.md file.",
   "main": "main.js",
-  "scripts": {
-    "start": "node main.js"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/autosuite/autobadge.git"
@@ -23,7 +21,7 @@
   "dependencies": {
     "@actions/core": "^1.2.0",
     "@actions/exec": "^1.0.2",
-    "@teaminkling/autolib": "^0.1.1"
+    "@teaminkling/autolib": "^0.1.2"
   },
   "devDependencies": {
     "@types/node": "^13.1.5",

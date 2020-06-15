@@ -1,4 +1,4 @@
-import * as autolib from 'autolib';
+import * as autolib from '@teaminkling/autolib';
 
 /**
  * API endpoint Shields URL base to add our GET queries to.
@@ -45,7 +45,7 @@ async function formVersionUrl(versionTuple: autolib.SemVer, color: string): Prom
  */
 async function run() {
     const latestStableVersion: autolib.SemVer = await autolib.findLatestVersionFromGitTags(true);
-    const latestDevelopmentVersion: autolib.SemVer = await autolib.findLatestSemVerUsingString(false);
+    const latestDevelopmentVersion: autolib.SemVer = await autolib.findLatestVersionFromGitTags(false);
 
     const replacements: Array<autolib.ReplacementMap> = [
         new autolib.ReplacementMap(

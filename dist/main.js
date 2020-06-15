@@ -43,9 +43,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var core = __importStar(require("@actions/core"));
-var exec = __importStar(require("@actions/exec"));
-var autolib = __importStar(require("autolib"));
+var autolib = __importStar(require("@teaminkling/autolib"));
 /**
  * API endpoint Shields URL base to add our GET queries to.
  */
@@ -88,44 +86,24 @@ function formVersionUrl(versionTuple, color) {
  */
 function run() {
     return __awaiter(this, void 0, void 0, function () {
-        var _this = this;
+        var latestStableVersion, latestDevelopmentVersion, replacements;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, exec.exec('git fetch --tags')];
+                case 0: return [4 /*yield*/, autolib.findLatestVersionFromGitTags(true)];
                 case 1:
-                    _a.sent();
-                    return [4 /*yield*/, exec.exec('git tag', [], {
-                            listeners: {
-                                stdout: function (data) { return __awaiter(_this, void 0, void 0, function () {
-                                    var latestStableVersion, latestDevelopmentVersion, replacements;
-                                    return __generator(this, function (_a) {
-                                        switch (_a.label) {
-                                            case 0: return [4 /*yield*/, autolib.findLatestSemVerUsingString(data.toString(), true)];
-                                            case 1:
-                                                latestStableVersion = _a.sent();
-                                                return [4 /*yield*/, autolib.findLatestSemVerUsingString(data.toString(), false)];
-                                            case 2:
-                                                latestDevelopmentVersion = _a.sent();
-                                                replacements = [
-                                                    new autolib.ReplacementMap(STABLE_RELEASE_REGEXP, "[" + STABLE_RELEASE_KEY + "]: " + formVersionUrl(latestStableVersion, "green")),
-                                                    new autolib.ReplacementMap(DEVELOPMENT_RELEASE_REGEXP, "[" + DEVELOPMENT_RELEASE_KEY + "]: " + formVersionUrl(latestDevelopmentVersion, "purple")),
-                                                ];
-                                                autolib.rewriteFileContentsWithReplacements(TARGET_FILE, replacements);
-                                                return [2 /*return*/];
-                                        }
-                                    });
-                                }); },
-                                stderr: function (data) {
-                                    core.error(data.toString());
-                                },
-                            }
-                        })];
+                    latestStableVersion = _a.sent();
+                    return [4 /*yield*/, autolib.findLatestVersionFromGitTags(false)];
                 case 2:
-                    _a.sent();
+                    latestDevelopmentVersion = _a.sent();
+                    replacements = [
+                        new autolib.ReplacementMap(STABLE_RELEASE_REGEXP, "[" + STABLE_RELEASE_KEY + "]: " + formVersionUrl(latestStableVersion, "green")),
+                        new autolib.ReplacementMap(DEVELOPMENT_RELEASE_REGEXP, "[" + DEVELOPMENT_RELEASE_KEY + "]: " + formVersionUrl(latestDevelopmentVersion, "purple")),
+                    ];
+                    autolib.rewriteFileContentsWithReplacements(TARGET_FILE, replacements);
                     return [2 /*return*/];
             }
         });
     });
 }
 ;
-run().then(function () { });
+run();
