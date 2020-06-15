@@ -6,7 +6,7 @@
 [![Test Coverage][coverage-image]][coverage-link]
 
 [stable-release]: https://img.shields.io/static/v1?label=stable&message=v0.1.0&color=blue
-[development-release]: https://img.shields.io/static/v1?label=in-dev&message=v0.2.0-rc2&color=red
+[development-release]: https://img.shields.io/static/v1?label=in-dev&message=v0.1.0&color=red
 [quality-image]: https://api.codeclimate.com/v1/badges/74ffb9e627a105dd7a43/maintainability
 [quality-link]: https://codeclimate.com/github/autosuite/autobadge/maintainability
 [coverage-image]: https://api.codeclimate.com/v1/badges/74ffb9e627a105dd7a43/test_coverage
