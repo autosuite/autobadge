@@ -1,1 +1,21 @@
+# IDE
+
+.idea/
+.vscode/
+
+# Environment
+
 HISTORY.md
+
+## Python
+
+.env
+__pycache__/
+
+### Django
+
+*.sqlite3
+
+## JavaScript
+
+.nuxt/
