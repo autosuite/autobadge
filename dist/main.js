@@ -35,6 +35,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -43,9 +46,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var replace_in_file_1 = __importDefault(require("replace-in-file"));
 var autolib = __importStar(require("@teaminkling/autolib"));
 /**
- * API endpoint Shields URL base to add our GET queries to.
+ * API endpoint Shields URL base to which the Action sends GET queries.
  */
 var BASE_BADGE_URL = "https://img.shields.io/static/v1";
 /**
@@ -61,49 +65,63 @@ var STABLE_RELEASE_KEY = "stable-release";
  */
 var DEVELOPMENT_RELEASE_KEY = "development-release";
 /**
- * The stable release regular expression.
+ * The stable release regular expression. Targets only first occurrence.
  */
 var STABLE_RELEASE_REGEXP = /\[stable-release]: (.*)/;
 /**
- * The development release regular expression.
+ * The development release regular expression. Targets only first occurrence.
  */
 var DEVELOPMENT_RELEASE_REGEXP = /\[development-release]: (.*)/;
 /**
  * Form a version URL from the SemVer representation.
  *
- * @param versionTuple the SemVer representation as [MAJOR, MINOR, PATCH, INFO]
- * @param color the colour of the badge
+ * @param version The version string.
+ * @param color The text for the colour of the badge.
  */
-function formVersionUrl(versionTuple, color) {
+function formVersionUrl(version, color) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            return [2 /*return*/, BASE_BADGE_URL + "?label=latest&message=" + versionTuple.toString() + "&color=" + color];
+            return [2 /*return*/, BASE_BADGE_URL + "?label=latest&message=" + version + "&color=" + color];
         });
     });
 }
 /**
  * Run the Action.
  */
-function run() {
+function runAction() {
     return __awaiter(this, void 0, void 0, function () {
-        var latestStableVersion, latestDevelopmentVersion, replacements;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var latestStableVersion, latestDevelopmentVersion, _a, _b, _c, _d, _e, _f;
+        return __generator(this, function (_g) {
+            switch (_g.label) {
                 case 0: return [4 /*yield*/, autolib.findLatestVersionFromGitTags(true)];
                 case 1:
-                    latestStableVersion = _a.sent();
+                    latestStableVersion = _g.sent();
                     return [4 /*yield*/, autolib.findLatestVersionFromGitTags(false)];
                 case 2:
-                    latestDevelopmentVersion = _a.sent();
-                    replacements = [
-                        new autolib.ReplacementMap(STABLE_RELEASE_REGEXP, "[" + STABLE_RELEASE_KEY + "]: " + formVersionUrl(latestStableVersion, "green")),
-                        new autolib.ReplacementMap(DEVELOPMENT_RELEASE_REGEXP, "[" + DEVELOPMENT_RELEASE_KEY + "]: " + formVersionUrl(latestDevelopmentVersion, "purple")),
+                    latestDevelopmentVersion = _g.sent();
+                    _b = (_a = replace_in_file_1.default).sync;
+                    _c = {
+                        files: TARGET_FILE,
+                        from: [STABLE_RELEASE_REGEXP, DEVELOPMENT_RELEASE_REGEXP]
+                    };
+                    _d = "[" + STABLE_RELEASE_KEY + "]: ";
+                    return [4 /*yield*/, formVersionUrl(latestStableVersion, "green")];
+                case 3:
+                    _e = [
+                        _d + (_g.sent())
                     ];
-                    autolib.rewriteFileContentsWithReplacements(TARGET_FILE, replacements);
+                    _f = "[" + DEVELOPMENT_RELEASE_KEY + "]: ";
+                    return [4 /*yield*/, formVersionUrl(latestDevelopmentVersion, "purple")];
+                case 4:
+                    _b.apply(_a, [(_c.to = _e.concat([
+                            _f + (_g.sent())
+                        ]),
+                            _c)]);
                     return [2 /*return*/];
             }
         });
     });
 }
-;
-run();
+var actionRunner = runAction();
+/* Promise handlers. */
+actionRunner.then(function () { });

@@ -1,7 +1,9 @@
+import replace from 'replace-in-file';
+
 import * as autolib from '@teaminkling/autolib';
 
 /**
- * API endpoint Shields URL base to add our GET queries to.
+ * API endpoint Shields URL base to which the Action sends GET queries.
  */
 const BASE_BADGE_URL: string = "https://img.shields.io/static/v1";
 
@@ -21,44 +23,44 @@ const STABLE_RELEASE_KEY: string = "stable-release";
 const DEVELOPMENT_RELEASE_KEY: string = "development-release";
 
 /**
- * The stable release regular expression.
+ * The stable release regular expression. Targets only first occurrence.
  */
 const STABLE_RELEASE_REGEXP: RegExp = /\[stable-release]: (.*)/;
 
 /**
- * The development release regular expression.
+ * The development release regular expression. Targets only first occurrence.
  */
 const DEVELOPMENT_RELEASE_REGEXP: RegExp = /\[development-release]: (.*)/;
 
 /**
  * Form a version URL from the SemVer representation.
  *
- * @param versionTuple the SemVer representation as [MAJOR, MINOR, PATCH, INFO]
- * @param color the colour of the badge
+ * @param version The version string.
+ * @param color The text for the colour of the badge.
  */
-async function formVersionUrl(versionTuple: autolib.SemVer, color: string): Promise<string> {
-    return `${BASE_BADGE_URL}?label=latest&message=${versionTuple.toString()}&color=${color}`;
+async function formVersionUrl(version: string, color: string): Promise<string> {
+    return `${BASE_BADGE_URL}?label=latest&message=${version}&color=${color}`;
 }
 
 /**
  * Run the Action.
  */
-async function run() {
-    const latestStableVersion: autolib.SemVer = await autolib.findLatestVersionFromGitTags(true);
-    const latestDevelopmentVersion: autolib.SemVer = await autolib.findLatestVersionFromGitTags(false);
+async function runAction() {
+    const latestStableVersion: string = await autolib.findLatestVersionFromGitTags(true);
+    const latestDevelopmentVersion: string = await autolib.findLatestVersionFromGitTags(false);
 
-    const replacements: Array<autolib.ReplacementMap> = [
-        new autolib.ReplacementMap(
-            STABLE_RELEASE_REGEXP,
-            `[${STABLE_RELEASE_KEY}]: ${formVersionUrl(latestStableVersion, "green")}`
-        ),
-        new autolib.ReplacementMap(
-            DEVELOPMENT_RELEASE_REGEXP,
-            `[${DEVELOPMENT_RELEASE_KEY}]: ${formVersionUrl(latestDevelopmentVersion, "purple")}`
-        ),
-    ];
+    replace.sync({
+        files: TARGET_FILE,
+        from: [STABLE_RELEASE_REGEXP, DEVELOPMENT_RELEASE_REGEXP],
+        to: [
+            `[${STABLE_RELEASE_KEY}]: ${await formVersionUrl(latestStableVersion, "green")}`,
+            `[${DEVELOPMENT_RELEASE_KEY}]: ${await formVersionUrl(latestDevelopmentVersion, "purple")}`
+        ],
+    });
+}
 
-    autolib.rewriteFileContentsWithReplacements(TARGET_FILE, replacements);
-};
+const actionRunner: Promise<void> = runAction();
 
-run();
+/* Promise handlers. */
+
+actionRunner.then(() => {});

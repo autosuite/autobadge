@@ -20,7 +20,8 @@
   "homepage": "https://github.com/autosuite/autobadge#readme",
   "dependencies": {
     "@actions/exec": "^1.0.2",
-    "@teaminkling/autolib": "^0.2.0"
+    "@teaminkling/autolib": "^0.3.0",
+    "replace-in-file": "^6.1.0"
   },
   "devDependencies": {
     "@actions/core": "^1.2.4",
