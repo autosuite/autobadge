@@ -1,5 +1,7 @@
 # Autobadge
 
+> Autobadge has been discontinued. This repository has been archived.
+
 ![Autobadge Stable Release][stable-release]
 ![Autobadge Development Release][development-release]
 [![Maintainability][quality-image]][quality-link]
